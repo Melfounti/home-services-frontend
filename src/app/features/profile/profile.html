@@ -1,0 +1,9 @@
+@if (profile(); as p) {
+  <div class="profile-container">
+    <h2>{{ p.name }}</h2>
+    <p>Email: {{ p.email }}</p>
+    <p>Role: {{ p.role }}</p>
+  </div>
+} @else {
+  <p>Loading profile...</p>
+}
