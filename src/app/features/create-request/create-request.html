@@ -1,0 +1,23 @@
+<div class="create-request-container">
+  <h2>Post a Service Request</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label>Title</label>
+      <input type="text" [(ngModel)]="title" name="title" required />
+    </div>
+    <div>
+      <label>Category</label>
+      <input type="text" [(ngModel)]="category" name="category" required placeholder="e.g. Plumbing, Electrical" />
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea [(ngModel)]="description" name="description" required rows="4"></textarea>
+    </div>
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Submitting...' : 'Submit Request' }}
+    </button>
+  </form>
+</div>

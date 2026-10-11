@@ -1,0 +1,26 @@
+<div class="request-feed-container">
+  <h2>Open Service Requests</h2>
+
+  @if (isLoading()) {
+    <p>Loading...</p>
+  } @else if (requests().length === 0) {
+    <p>No open requests right now.</p>
+  } @else {
+    <ul>
+      @for (req of requests(); track req.id) {
+        <li class="request-card">
+          <h3>{{ req.title }}</h3>
+          <p class="category">{{ req.category }}</p>
+          <p>{{ req.description }}</p>
+          <p class="meta">Posted by {{ req.customerName }}</p>
+        </li>
+      }
+    </ul>
+
+    <div class="pagination">
+      <button (click)="previousPage()" [disabled]="currentPage() === 0">Previous</button>
+      <span>Page {{ currentPage() + 1 }} of {{ totalPages() }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1">Next</button>
+    </div>
+  }
+</div>

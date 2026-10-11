@@ -22,7 +22,15 @@ export class Login {
     this.errorMessage.set('');
     this.auth.login({ email: this.email, password: this.password }).subscribe({
       next: () => this.router.navigate(['/profile']),
-      error: () => this.errorMessage.set('Invalid email or password')
+     error: (err) => {
+  if (err.status === 401) {
+    this.errorMessage.set('Invalid email or password');
+  } else if (err.status === 0) {
+    this.errorMessage.set('Cannot reach the server. Is the backend running?');
+  } else {
+    this.errorMessage.set('Something went wrong (status ' + err.status + ')');
+  }
+}
     });
   }
 }
