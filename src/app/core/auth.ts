@@ -27,10 +27,18 @@ export class Auth {
   private tokenKey = 'auth_token';
 
   isLoggedIn = signal<boolean>(this.hasToken());
+  role = signal<string | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    if (this.isTokenExpired()) {
+      localStorage.removeItem(this.tokenKey);
+    } else {
+      this.isLoggedIn.set(true);
+      this.role.set(this.decodePayload()?.role ?? null);
+    }
+  }
 
-  register(request: RegisterRequest): Observable<string> {
+ register(request: RegisterRequest): Observable<string> {
     return this.http.post(`${this.baseUrl}/register`, request, { responseType: 'text' });
   }
 
@@ -39,10 +47,10 @@ export class Auth {
       tap((response) => {
         localStorage.setItem(this.tokenKey, response.token);
         this.isLoggedIn.set(true);
+        this.role.set(this.decodePayload()?.role ?? null);
       })
     );
   }
-
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedIn.set(false);
@@ -54,5 +62,22 @@ export class Auth {
 
   private hasToken(): boolean {
     return this.getToken() !== null;
+  }
+
+  isTokenExpired(): boolean {
+    const payload = this.decodePayload();
+    if (!payload?.exp) return true;
+    return payload.exp * 1000 < Date.now();
+  }
+
+  private decodePayload(): { role?: string; exp?: number } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
   }
 }

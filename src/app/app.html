@@ -1,1 +1,21 @@
+<nav class="navbar">
+  <a routerLink="/">Home</a>
+
+  @if (!auth.isLoggedIn()) {
+    <a routerLink="/login">Login</a>
+    <a routerLink="/register">Register</a>
+  } @else {
+    <a routerLink="/profile">Profile</a>
+
+    @if (auth.role() === 'CUSTOMER') {
+      <a routerLink="/create-request">Post a request</a>
+    }
+    @if (auth.role() === 'PROVIDER') {
+      <a routerLink="/requests">Browse requests</a>
+    }
+
+    <button type="button" (click)="logout()">Logout</button>
+  }
+</nav>
+
 <router-outlet></router-outlet>

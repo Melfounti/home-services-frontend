@@ -5,12 +5,13 @@ import { Profile } from './features/profile/profile';
 import { Welcome } from './features/welcome/welcome';
 import { CreateRequest } from './features/create-request/create-request';
 import { RequestFeed } from './features/request-feed/request-feed';
+import { authGuard, roleGuard } from './core/role-guard';
 
 export const routes: Routes = [
   { path: '', component: Welcome },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
-    { path: 'create-request', component: CreateRequest },
-  { path: 'requests', component: RequestFeed },
-  { path: 'profile', component: Profile }
+  { path: 'profile', component: Profile, canActivate: [authGuard] },
+  { path: 'create-request', component: CreateRequest, canActivate: [roleGuard('CUSTOMER')] },
+  { path: 'requests', component: RequestFeed, canActivate: [roleGuard('PROVIDER')] }
 ];
